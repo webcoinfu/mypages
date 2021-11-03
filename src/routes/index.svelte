@@ -1,12 +1,5 @@
-<script>
-  import { onMount } from "svelte";
-  onMount(async () => {
-    if (navigator.webdriver || !location.hostname) return;
-		const text = '\x68\x69\x40' + location.hostname;
-		const element = document.querySelector( 'a[href="/email/hi/at/this/domain"]' );
-		element.textContent = text;
-		element.href = `\x6d\x61\x69\x6C\x74\x6F\x3A${text}`;
-  });
+<script context="module">
+  export const prerender = true;
 </script>
 
 <svelte:head>
@@ -27,16 +20,16 @@
       <h1>Passawat Noraman</h1>
       <p>Full-stack developer</p>
       <p class="link">
-        <img src="/twitter.svg" alt="twitter icon">
+        <img src="/twitter.svg" alt="twitter icon" />
         <a href="https://twitter.com/NotRealPaz" rel="me">NotRealPaz</a>
       </p>
       <p class="link">
-        <img src="/github.svg" alt="github icon">
+        <img src="/github.svg" alt="github icon" />
         <a href="https://github.com/NotRealPaz" rel="me">NotRealPaz</a>
       </p>
       <p class="link">
-        <img src="/email.svg" alt="github icon">
-        <a href="/email/hi/at/this/domain">hi at this domain</a>
+        <img src="/email.svg" alt="github icon" />
+        <a href="mailto:hi@notrealpaz.me">hi@notrealpaz.me</a>
       </p>
     </div>
   </div>
@@ -115,7 +108,7 @@
     z-index: 3;
   }
 
-	.link img {
+  .link img {
     vertical-align: bottom;
     margin-right: 5px;
   }

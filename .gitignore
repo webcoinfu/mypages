@@ -105,3 +105,4 @@ dist
 
 # svelte-kit build file
 .svelte-kit
+build/

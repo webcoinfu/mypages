@@ -5,6 +5,24 @@
 <script>
 	import { onMount, tick } from "svelte";
 
+	if (!Array.at) {
+		Object.defineProperty(Array.prototype, "at", {
+			value: function at(n) {
+				// ToInteger() abstract op
+				n = Math.trunc(n) || 0;
+				// Allow negative indexing from the end
+				if (n < 0) n += this.length;
+				// OOB access is guaranteed to return undefined
+				if (n < 0 || n >= this.length) return undefined;
+				// Otherwise, this is just normal property access
+				return this[n];
+			},
+			writable: true,
+			enumerable: false,
+			configurable: true,
+		});
+	}
+
 	onMount(() => {
 		let frame = 0;
 		const bg1 = document.getElementById("bg1");

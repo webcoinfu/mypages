@@ -2,50 +2,16 @@
 	export const prerender = true;
 </script>
 
-<script>
-	import { onMount, tick } from "svelte";
-
-	if (!Array.at) {
-		Object.defineProperty(Array.prototype, "at", {
-			value: function at(n) {
-				// ToInteger() abstract op
-				n = Math.trunc(n) || 0;
-				// Allow negative indexing from the end
-				if (n < 0) n += this.length;
-				// OOB access is guaranteed to return undefined
-				if (n < 0 || n >= this.length) return undefined;
-				// Otherwise, this is just normal property access
-				return this[n];
-			},
-			writable: true,
-			enumerable: false,
-			configurable: true,
-		});
-	}
-
-	onMount(() => {
-		let frame = 0;
-		const bg1 = document.getElementById("bg1");
-		const bg2 = document.getElementById("bg2");
-		const bg3 = document.getElementById("bg3");
-		const framelist = [bg1, bg2, bg3, bg2];
-		const changebg = async () => {
-			await tick();
-			framelist[frame].style.display = "block";
-			framelist.at(frame - 1).style.display = "none";
-			setTimeout(changebg, frame === 0 ? 3000 : 80);
-			frame === framelist.length - 1 ? (frame = 0) : frame++;
-		};
-		changebg();
-	});
-</script>
+<svelte:head>
+	<link rel="preload" as="image" href="/bg1.png">
+	<link rel="preload" as="image" href="/bg2.png">
+	<link rel="preload" as="image" href="/bg3.png">
+</svelte:head>
 
 <div class="shutter1" />
 <main>
 	<div class="flex full videowarp">
-		<img id="bg1" class="blur" src="/bg1.png" style="display: block;" alt />
-		<img id="bg2" class="blur" src="/bg2.png" style="display: none;" alt />
-		<img id="bg3" class="blur" src="/bg3.png" style="display: none;" alt />
+		<div class="bg" />
 		<div class="blurbar" />
 		<h1>NotRealPaz</h1>
 	</div>
@@ -56,6 +22,24 @@
 </main>
 
 <style>
+	@keyframes bgchange {
+		from {
+			content: url("/bg1.png");
+		}
+
+		96% {
+			content: url("/bg1.png");
+		}
+
+		98% {
+			content: url("/bg2.png");
+		}
+
+		to {
+			content: url("/bg3.png");
+		}
+	}
+
 	.videowarp {
 		position: relative;
 		overflow: hidden;
@@ -63,12 +47,14 @@
 		height: 100vh;
 	}
 
-	img.blur {
+	div.bg {
 		position: absolute;
 		width: 150%;
 		/* min-height: 100vh; */
 		z-index: 1;
 		filter: blur(4px) brightness(0.25);
+		content: url("/bg1.png");
+		animation: bgchange 2s forwards infinite alternate;
 	}
 
 	.blurbar {

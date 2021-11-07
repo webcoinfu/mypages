@@ -60,10 +60,12 @@
         <img src="/github.svg" alt="github icon" />
         <a href="https://github.com/NotRealPaz" rel="me">NotRealPaz</a>
       </p>
+      {@html "<!--sse-->"}
       <p class="link">
         <img src="/email.svg" alt="github icon" />
         <a href="mailto:hi@notrealpaz.me">hi@notrealpaz.me</a>
       </p>
+      {@html "<!--/sse-->"}
     </div>
   </div>
 </main>

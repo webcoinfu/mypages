@@ -2,6 +2,39 @@
   export const prerender = true;
 </script>
 
+<script>
+	import { onMount, tick } from "svelte";
+	if (!Array.at) {
+		Object.defineProperty(Array.prototype, "at", {
+			value: function at(n) {
+				// ToInteger() abstract op
+				n = Math.trunc(n) || 0;
+				// Allow negative indexing from the end
+				if (n < 0) n += this.length;
+				// OOB access is guaranteed to return undefined
+				if (n < 0 || n >= this.length) return undefined;
+				// Otherwise, this is just normal property access
+				return this[n];
+			},
+			writable: true,
+			enumerable: false,
+			configurable: true,
+		});
+	}
+	onMount(() => {
+		let frame = 0;
+    const img = document.querySelector('img#bg');
+		const framelist = [1, 2, 3, 2];
+		const changebg = async () => {
+			await tick();
+			img.src = `/bg${framelist[frame]}.png`;
+			setTimeout(changebg, frame === 0 ? 3000 : 80);
+			frame === framelist.length - 1 ? (frame = 0) : frame++;
+		};
+		changebg();
+	});
+</script>
+
 <svelte:head>
   <link rel="preload" as="image" href="/bg1.png" />
   <link rel="preload" as="image" href="/bg2.png" />
@@ -10,8 +43,8 @@
 
 <div class="shutter1" />
 <main>
-  <div class="flex full videowarp">
-    <div class="bg" />
+  <div class="flex full bgwarp">
+    <img id="bg" src="/bg1.png" alt="bg"/>
     <div class="blurbar" />
     <h1 class="title">NotRealPaz</h1>
   </div>
@@ -33,45 +66,23 @@
       </p>
     </div>
   </div>
-  <p class="text-center">
-    © {new Date().getFullYear()} by NotRealPaz
-  </p>
 </main>
 
 <style>
-  @keyframes bgchange {
-    from {
-      content: url("/bg1.png");
-    }
 
-    96% {
-      content: url("/bg1.png");
-    }
-
-    98% {
-      content: url("/bg2.png");
-    }
-
-    to {
-      content: url("/bg3.png");
-    }
-  }
-
-  .videowarp {
+  .bgwarp {
     position: relative;
     overflow: hidden;
     width: 100%;
     height: 100vh;
   }
 
-  div.bg {
+  img#bg {
     position: absolute;
     width: 150%;
     /* min-height: 100vh; */
     z-index: 1;
-    filter: blur(4px) brightness(0.25);
-    content: url("/bg1.png");
-    animation: bgchange 2s forwards infinite alternate;
+    filter: blur(0.25vw) brightness(0.25);
   }
 
   .blurbar {
@@ -176,9 +187,5 @@
       height: 100%;
       background-color: var(--bg-color);
     }
-  }
-
-  .text-center {
-    text-align: center;
   }
 </style>
